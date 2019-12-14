@@ -1,33 +1,41 @@
 import React, {useState} from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import Axios from 'axios';
+import {addSmurf} from '../actions/smurfAction';
+import { connect } from 'react-redux';
 
-const ListForm = () => {
+
+
+
+const ListForm = (props) => {
     const [smurf, setSmurf] = useState({
         name: "",
         age: "",
         height: "",
     });
 
+    
+
+
     const handleChange = event => {
         setSmurf({
             ...smurf,
-            [event.target.name]:[event.target.value]
+            [event.target.name]: event.target.value,
+            [event.target.age]: event.target.value,
+            [event.target.height]: event.target.value
         });
     };
 
-    const handleSubmit = () => {
-        
-        Axios.post("http://localhost:3333/smurfs", smurf)
-        .then(response =>
-            console.log(response))
-            setSmurf(...smurf,); 
-        .catch(err => console.log(err))
-           
-    }//move to smurfaction , add action types, of ADD_SMURF_START
+    const submitForm = (event) => {
+        event.preventDefault();
+            const newSmurf = {
+                ...smurf,
+            };
+            props.addSmurf(newSmurf)
+            setSmurf({name: "", age: "", height: ""})
+        }    
 
     return(
-        <Form>
+        <Form onSubmit ={submitForm}> 
             <FormGroup>
                 <Label for="exampleName">Name</Label>
                 <Input onChange={handleChange} type="text" name="name" id="exampleName" placeholder="Name" />
@@ -40,9 +48,19 @@ const ListForm = () => {
                 <Label for="exampleHeight">Height</Label>
                 <Input onChange={handleChange} type="text" name="height" id="exampleHeight" placeholder="Height" />
             </FormGroup>
-            <Button onSubmit={handleSubmit}>Submit</Button>
+            <Button type="submit">Submit</Button>
         </Form>
     );
-}
+};    
 
-export default ListForm;
+const mapStateToProps = state => {
+    return {
+        smurf: state.smurf,
+        isFetching: state.isFetching,
+        error: state.error
+    };
+};
+
+export default connect (mapStateToProps, { addSmurf })(ListForm);
+
+

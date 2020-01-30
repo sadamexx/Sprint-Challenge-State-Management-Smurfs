@@ -1,31 +1,29 @@
-import React from "react";
-import { connect } from "react-redux";
-import { fetchSmurf } from '../actions/villageActions';
+import React, {useContext, useState} from "react";
+
+import { VillageContext } from "../contexts/VillageContext";
+import SmurfCard from "./Card";
 
 
-const Village = props => {
-    console.log(props)
+
+const Village = () => {
+    const {smurfs} = useContext(VillageContext)
+
     return(
         <div>
-            <button onClick={props.fetchSmurf}>Find smurfs!</button>
-            {props.smurfs && 
-                props.smurfs.map(smurf => (
-                    <div key={smurf.id}>
-                        <h2>Name:{smurf.name}</h2>
-                        <p>Age: {smurf.age}</p>
-                        <p>Height:{smurf.height}</p>
-                    </div>
-                ))}
+          smurfs.map(villager => {
+              return (
+                  <SmurfCard
+                  key={villager.id}
+                  name={villager.name}
+                  age={villager.age}
+                  height={villager.height}
+                  />
+              )
+          })  
+            
         </div>
     )
 }
 
-const mapStateToProps = state => {
-    return{
-        isLoading: state.villageReducer.isLoading,  
-        smurfs: state.villageReducer.smurfs,
-        error: state.villageReducer.error
-    }
-}
 
-export default connect (mapStateToProps, {fetchSmurf})(Village);
+export default Village;

@@ -1,22 +1,35 @@
-import React, {useState} from "react";
-import { connect } from "react-redux"
-import { postSmurf } from "../actions/formActions";
+import React, {useState, useContext} from "react";
+import axios from "axios";
+import { FormContext } from "../contexts/FormContext";
 
-const AddVillagers = props => {
-    const [newSmurf, setNewSmurf] = useState([]);
+
+
+
+const AddVillagers = () => {
+    const [newSmurf, setNewSmurf] = useState({
+        name:'',
+        age: '',
+        height: '',
+    });
+
+    const { addSmurfs} = useContext(FormContext)
 
     const handleChanges = (e) => {
+        e.preventDefault();
         setNewSmurf({
             ...newSmurf,
             [e.target.name] : e.target.value});
     }
 
+    const handleSubmit = e => {
+        e.preventDefault();
+        addSmurfs()
+        };
     
-    }
     return(
         <div>
             <h2>Add a smurf to your village!</h2>
-            <form>
+            <form onSubmit={addSmurfs}>
                 
                 <input 
                 placeholder="Name"
@@ -37,16 +50,15 @@ const AddVillagers = props => {
                 onChange={handleChanges}
                 />
 
-                <button onClick={props.postSmurf}>Add to village</button>
+                <button>Add to village</button>
             </form>
+
+            
+
         </div>
     )
 };
 
-const mapStateToProps = state => {
-    return {
-        newSmurfs: state.listReducer.newSmurfs
-    }
-}
 
-export default connect (mapStateToProps, {postSmurf})(AddVillagers)
+
+export default AddVillagers;
